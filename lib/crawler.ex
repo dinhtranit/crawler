@@ -77,11 +77,14 @@ defmodule Crawler do
 
   def download_story_page_img(url_pages, headers, chapter_folder, page_num) do
     if length(url_pages) > page_num do
-      url = Enum.at(url_pages, page_num)
-      response = HTTPoison.get!(url,headers)
-      IO.inspect("#{chapter_folder}/page #{page_num + 1}.webp")
-      File.write!("#{chapter_folder}/page #{page_num + 1}.webp", response.body)
-      download_story_page_img(url_pages, headers, chapter_folder, page_num + 1)
+      path_file_name = "#{chapter_folder}/page #{page_num + 1}.webp"
+      if not File.exists?(path_file_name) do
+        url = Enum.at(url_pages, page_num)
+        response = HTTPoison.get!(url,headers)
+        IO.inspect(path_file_name)
+        File.write!(path_file_name, response.body)
+        download_story_page_img(url_pages, headers, chapter_folder, page_num + 1)
+      end
     end
   end
 end
